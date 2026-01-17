@@ -46,7 +46,7 @@ export default function Login({ navigation }) {
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
 
-            <View style={styles.content}>
+            <View style={[styles.content, { backgroundColor: theme.content }]}>
                 <Text style={[styles.title, { color: theme.text }]}>Login</Text>
 
 
@@ -74,7 +74,6 @@ export default function Login({ navigation }) {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: '#ddddddff',
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
@@ -86,7 +85,8 @@ const styles = StyleSheet.create({
     content: {
         padding: 20,
         borderRadius: 10,
-        width: '90%'
+        width: '90%',
+        borderWidth: 1,
     },
     input: {
         borderWidth: 1,
