@@ -22,11 +22,14 @@ export default function Login({ navigation }) {
 
             if (!res.data || !res.data.token || !res.data.nome) {
                 throw new Error("Resposta inválida do servidor");
-            }
+            };
 
-            const { token, nome } = res.data;
-            const userObj = { nome: nome }
-            await login({ token, user: userObj});
+            await login({ 
+                token: res.data.token,
+                user: {
+                    nome: res.data.nome,
+                }
+            });
 
             router.replace("/(tabs)/tasks");
 
