@@ -21,8 +21,8 @@ export default function TabsLayout() {
                 options={{
                     title: "Tarefas",
                     headerTitle: () => (
-                        <Text style={{ color: theme.text, fontSize: 16 }}>
-                            Olá, ${user?.nome}
+                        <Text style={{ color: theme.text, fontSize: 17 }}>
+                            Olá, {user?.nome}
                         </Text>
                     ),
                     tabBarIcon: ({ color, size }) => (
