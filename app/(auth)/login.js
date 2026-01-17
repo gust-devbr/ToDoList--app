@@ -16,8 +16,8 @@ export default function Login({ navigation }) {
     async function handleLogin() {
         try {
             const res = await api.post("/auth/login", {
-                email: email,   
-                senha: senha
+                email,   
+                senha
             });
 
             if (!res.data || !res.data.token || !res.data.nome) {
@@ -25,11 +25,7 @@ export default function Login({ navigation }) {
             }
 
             const { token, nome } = res.data;
-
-            const userObj = { name: nome }
-            await AsyncStorage.setItem("@user", JSON.stringify(userObj));
-            await AsyncStorage.setItem("token", token);
-            
+            const userObj = { nome: nome }
             await login({ token, user: userObj});
 
             router.replace("/(tabs)/tasks");
