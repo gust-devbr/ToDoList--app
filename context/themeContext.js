@@ -4,6 +4,7 @@ export const ThemeContext = createContext();
 
 const lightTheme = {
     background: "#FFFFFF",
+    content: "#f7f7f7",
     text: "#000000",
     primary: "#4F46E5",
     card: "#F3F4F6",
@@ -11,6 +12,7 @@ const lightTheme = {
 
 const darkTheme = {
     background: "#121212",
+    content: "#6a6a6a",
     text: "#FFFFFF",
     primary: "#6366F1",
     card: "#1E1E1E",
