@@ -45,9 +45,9 @@ export default function Login({ navigation }) {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
 
-            <View style={[styles.content, { backgroundColor: theme.background }]}>
+            <View style={styles.content}>
                 <Text style={[styles.title, { color: theme.text }]}>Login</Text>
 
 
