@@ -32,7 +32,7 @@ export function ThemeProvider({ children }) {
             if (storedTheme === 'dark') {
                 setDarkMode(true)
             };
-            loadTheme(false);
+            setLoading(false);
         };
         loadTheme();
     }, []);
