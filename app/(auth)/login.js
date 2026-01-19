@@ -1,4 +1,4 @@
-import { View, Text, TextInput, Alert, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import api from '../services/api';
@@ -9,11 +9,14 @@ export default function Login({ navigation }) {
 
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
+    const [redirecting, setRedirecting] = useState(false)
 
     async function handleLogin() {
         try {
+            setRedirecting(true)
+
             const res = await api.post("/auth/login", {
-                email,   
+                email,
                 senha
             });
 
@@ -21,20 +24,24 @@ export default function Login({ navigation }) {
                 throw new Error("Resposta inválida do servidor");
             };
 
-            await login({ 
+            await login({
                 token: res.data.token,
                 user: {
                     nome: res.data.nome,
                 }
             });
 
-            router.replace("/(tabs)/tasks");
+            setTimeout(() => {
+                router.replace("/(tabs)/tasks");
+            }, 800)
 
         } catch (err) {
             const message =
                 err.response?.data?.error ||
                 err.message ||
                 "Email ou senha inválidos";
+
+            setRedirecting(false);
 
             Alert.alert("Erro", message);
         }
@@ -59,7 +66,16 @@ export default function Login({ navigation }) {
                     onChangeText={setSenha}
                 />
 
-                <Button title='Login' onPress={handleLogin} />
+                {redirecting ? (
+                    <>
+                        <ActivityIndicator size="large" />
+                        <Text style={{ textAlign: 'center' }}>
+                            Login realizado! Redirecionando...
+                        </Text>
+                    </>
+                ) : (
+                    <Button title='Login' onPress={handleLogin} />
+                )}
             </View>
         </View>
     )

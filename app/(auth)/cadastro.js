@@ -1,14 +1,18 @@
-import { View, Text, TextInput, Alert, StyleSheet, Button } from 'react-native';
+import { View, Text, TextInput, Alert, StyleSheet, Button, ActivityIndicator } from 'react-native';
 import { useState } from 'react';
+import { router } from 'expo-router';
 import api from '../services/api';
 
 export default function Cadastro({ navigation }) {
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
+    const [redirecting, setRedirecting] = useState(false)
 
     async function handleCadastro() {
         try {
+            setRedirecting(true)
+
             await api.post("/auth/register", {
                 nome: nome,
                 email: email,
@@ -16,8 +20,15 @@ export default function Cadastro({ navigation }) {
             });
 
             Alert.alert("Sucesso", "Cadastro realizado!");
+
+            setTimeout(() => {
+                router.replace("/login");
+            }, 800)
+
         } catch (err) {
             console.log(err.response?.data || err.message);
+            setRedirecting(false);
+
             Alert.alert(
                 "Erro",
                 JSON.stringify(err.response?.data || err.message)
@@ -52,7 +63,16 @@ export default function Cadastro({ navigation }) {
                     onChangeText={setSenha}
                 />
 
-                <Button title='Cadastrar' onPress={handleCadastro} />
+                {redirecting ? (
+                    <>
+                        <ActivityIndicator size="large" />
+                        <Text style={{ textAlign: 'center' }}>
+                            Cadastro realizado! Redirecionando para login...
+                        </Text>
+                    </>
+                ) : (
+                    <Button title='Cadastrar' onPress={handleCadastro} />
+                )}
             </View>
 
             <Text style={styles.aviso}>*Não utilize dados reais</Text>
