@@ -1,12 +1,8 @@
 import { View, Text, TextInput, Alert, StyleSheet, Button } from 'react-native';
 import { useState } from 'react';
 import api from '../services/api';
-import { useTheme} from '../../context/themeContext';
-
 
 export default function Cadastro({ navigation }) {
-    const { theme } = useTheme();
-
     const [nome, setNome] = useState('')
     const [email, setEmail] = useState('')
     const [senha, setSenha] = useState('')
@@ -31,10 +27,9 @@ export default function Cadastro({ navigation }) {
     }
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.background }]}>
-
-            <View style={[styles.content, { backgroundColor: theme.content }]}>
-                <Text style={[styles.title, { color: theme.text }]}>Cadastro</Text>
+        <View style={styles.container}>
+            <View style={styles.content}>
+                <Text style={styles.title}>Cadastro</Text>
 
                 <TextInput
                     style={styles.input}
@@ -61,7 +56,6 @@ export default function Cadastro({ navigation }) {
             </View>
 
             <Text style={styles.aviso}>*Não utilize dados reais</Text>
-
         </View>
     )
 };
