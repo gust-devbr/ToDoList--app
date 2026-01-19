@@ -2,12 +2,9 @@ import { View, Text, TextInput, Alert, StyleSheet, Button } from 'react-native';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import api from '../services/api';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useTheme } from '../../context/themeContext';
 import { useAuth } from '../../context/authContext';
 
 export default function Login({ navigation }) {
-    const { theme } = useTheme();
     const { login } = useAuth();
 
     const [email, setEmail] = useState('')
@@ -44,11 +41,9 @@ export default function Login({ navigation }) {
     };
 
     return (
-        <View style={[styles.container, { backgroundColor: theme.background }]}>
-
-            <View style={[styles.content, { backgroundColor: theme.content }]}>
-                <Text style={[styles.title, { color: theme.text }]}>Login</Text>
-
+        <View style={styles.container}>
+            <View style={styles.content}>
+                <Text style={styles.title}>Login</Text>
 
                 <TextInput
                     style={styles.input}
@@ -66,7 +61,6 @@ export default function Login({ navigation }) {
 
                 <Button title='Login' onPress={handleLogin} />
             </View>
-
         </View>
     )
 };
