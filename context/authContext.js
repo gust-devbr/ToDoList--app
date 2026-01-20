@@ -24,6 +24,8 @@ export function AuthProvider({ children }) {
                 setLoading(false);
             }
         }
+
+        loadSession();
     }, []);
 
     async function login({ token, user }) {
