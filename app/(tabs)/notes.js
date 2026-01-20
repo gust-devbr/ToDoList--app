@@ -70,7 +70,7 @@ export default function Notes() {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                     <View style={styles.note}>
-                        <Text style={{ fontSize: 18, flex: 1, color: theme.text }}> 
+                        <Text style={{ fontSize: 18, flex: 1, color: theme.text }}>
                             {item.title}   ---   {item.content}
                         </Text>
                         <TouchableOpacity onPress={() => openEditModal(item)}>
@@ -127,8 +127,8 @@ export default function Notes() {
 
             {notes.length > 0 && (
                 <View style={styles.stats}>
-                    <Text>Total: {notes.length}</Text>
-                    <Text>Concluídas: {notes.filter(t => t.completed).length}</Text>
+                    <Text style={{ color: theme.text }}>Total: {notes.length}</Text>
+                    <Text style={{ color: theme.text }}>Concluídas: {notes.filter(t => t.completed).length}</Text>
                 </View>
             )}
         </View>
