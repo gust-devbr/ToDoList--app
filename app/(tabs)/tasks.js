@@ -118,8 +118,8 @@ export default function Tasks() {
 
             {tasks.length > 0 && (
                 <View style={styles.stats}>
-                    <Text>Total: {tasks.length}</Text>
-                    <Text>Concluídas: {tasks.filter(t => t.completed).length}</Text>
+                    <Text style={{ color: theme.text }}>Total: {tasks.length}</Text>
+                    <Text style={{ color: theme.text }}>Concluídas: {tasks.filter(t => t.completed).length}</Text>
                 </View>
             )}
         </View>
