@@ -1,13 +1,10 @@
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Link } from 'expo-router';
-import { useTheme } from '../context/themeContext';
 
 export default function Home() {
-    const { theme } = useTheme();
-
     return (
-        <View style={[styles.container, { backgroundColor: theme.background }]}>
-            <Text style={[styles.title, { color: theme.text, }]}>Bem-Vindo</Text>
+        <View style={styles.container}>
+            <Text style={styles.title}>Bem-Vindo</Text>
 
             <TouchableOpacity style={styles.button}>
                 <Link href={'/(auth)/login'} style={styles.link}>Login</Link>
