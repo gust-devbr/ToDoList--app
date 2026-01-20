@@ -4,7 +4,7 @@ import { FontAwesome } from '@expo/vector-icons';
 import api from '../services/api';
 import { useTheme } from '../../context/themeContext';
 
-export default function App() {
+export default function Tasks() {
     const { theme } = useTheme();
 
     const [tasks, setTasks] = useState([]);
