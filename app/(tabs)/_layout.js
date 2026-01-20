@@ -3,6 +3,7 @@ import { Text } from "react-native";
 import { useTheme } from "../../context/themeContext";
 import { useAuth } from "../../context/authContext";
 import { FontAwesome } from '@expo/vector-icons';
+import Foundation from '@expo/vector-icons/Foundation';
 
 export default function TabsLayout() {
     const { theme } = useTheme();
@@ -27,6 +28,21 @@ export default function TabsLayout() {
                     ),
                     tabBarIcon: ({ color, size }) => (
                         <FontAwesome name="list" size={size} color={color} />
+                    )
+                }}
+            />
+
+            <Tabs.Screen
+                name="notes"
+                options={{
+                    title: "Notas",
+                    headerTitle: () => (
+                        <Text style={{ color: theme.text, fontSize: 17 }}>
+                            Olá, {user?.nome}
+                        </Text>
+                    ),
+                    tabBarIcon: ({ color, size }) => (
+                        <Foundation name="clipboard-notes" size={size} color={color} />
                     )
                 }}
             />
