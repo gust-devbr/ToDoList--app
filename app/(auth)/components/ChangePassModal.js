@@ -1,12 +1,14 @@
 import { View, Alert, Modal, TextInput, StyleSheet, Button } from 'react-native';
 import { useState } from 'react';
 import api from '../../services/api';
+import { useAuth } from '../../../context/authContext';
+import { router } from 'expo-router';
 
 export default function ChangePassModal({ visible, onClose }) {
-
     const [atualSenha, setAtualSenha] = useState('');
     const [novaSenha, setNovaSenha] = useState('');
     const [confirmarSenha, setConfirmarSenha] = useState("");
+    const { logout } = useAuth();
 
     async function handleChangePassword() {
         if (novaSenha !== confirmarSenha) {
@@ -15,15 +17,18 @@ export default function ChangePassModal({ visible, onClose }) {
         }
 
         try {
-            await api.post("/auth/change-pass", { atualSenha, novaSenha });
+            await api.put("/auth/change-pass", { atualSenha: atualSenha, novaSenha: novaSenha });
             
-
             Alert.alert("Sucesso", "Sua senha foi alterada");
             setAtualSenha("");
             setNovaSenha("");
             setConfirmarSenha("");
 
+            await logout();
+            router.replace("/login")
+
         } catch (err) {
+            console.log(err)
             Alert.alert("Erro", err.response?.data?.error || "Erro ao mudar senha");
         }
     }
@@ -36,19 +41,16 @@ export default function ChangePassModal({ visible, onClose }) {
                     <TextInput
                         style={styles.input}
                         placeholder='Senha atual:'
-                        secureTextEntry
                         onChangeText={setAtualSenha}
                     />
                     <TextInput
                         style={styles.input}
                         placeholder='Nova senha:'
-                        secureTextEntry
                         onChangeText={setNovaSenha}
                     />
                     <TextInput
                         style={styles.input}
                         placeholder='Confirmar nova senha:'
-                        secureTextEntry
                         onChangeText={setConfirmarSenha}
                     />
 
