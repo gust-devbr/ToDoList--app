@@ -28,6 +28,7 @@ export default function Login({ navigation }) {
                 token: res.data.token,
                 user: {
                     nome: res.data.nome,
+                    email: res.data.email,
                 }
             });
 
