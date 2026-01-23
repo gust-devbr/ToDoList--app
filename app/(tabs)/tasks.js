@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
 import api from '../services/api';
 import { useTheme } from '../../context/themeContext';
 
@@ -78,7 +79,8 @@ export default function Tasks() {
                             <FontAwesome style={styles.actionIcons} name="pencil" size={22} color={theme.primary} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => toggleTasks(item.id)}>
-                            <FontAwesome style={styles.actionIcons} name="check" size={23} color={'blue'} />
+                            {item.completed ? 
+                            <Fontisto style={styles.actionIcons} name="arrow-return-left" size={23} color={"blue"} /> : <FontAwesome style={styles.actionIcons} name="check" size={23} color={'blue'} />}
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => deleteTasks(item.id)}>
                             <FontAwesome style={styles.actionIcons} name="trash" size={22} color={'red'} />
