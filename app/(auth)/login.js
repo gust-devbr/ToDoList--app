@@ -37,16 +37,12 @@ export default function Login({ navigation }) {
             }, 800)
 
         } catch (err) {
-            const message =
-                err.response?.data?.error ||
-                err.message ||
-                "Email ou senha inválidos";
-
             setRedirecting(false);
-
-            Alert.alert("Erro", message);
+            Alert.alert("Erro", "Email ou senha inválidos");
         }
     };
+
+    const isDisabled = !email || !senha;
 
     return (
         <View style={styles.container}>
@@ -75,7 +71,7 @@ export default function Login({ navigation }) {
                         </Text>
                     </>
                 ) : (
-                    <Button title='Login' onPress={handleLogin} />
+                    <Button disabled={isDisabled} title='Login' onPress={handleLogin} />
                 )}
             </View>
         </View>
