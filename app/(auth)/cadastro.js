@@ -26,16 +26,13 @@ export default function Cadastro({ navigation }) {
             }, 800)
 
         } catch (err) {
-            console.log(err.response?.data || err.message);
             setRedirecting(false);
-
-            Alert.alert(
-                "Erro",
-                JSON.stringify(err.response?.data || err.message)
-            );
+            Alert.alert("Erro", "Erro ao cadastrar");
         }
 
-    }
+    };
+
+    const isDisabled = !nome || !email || !senha;
 
     return (
         <View style={styles.container}>
@@ -71,7 +68,7 @@ export default function Cadastro({ navigation }) {
                         </Text>
                     </>
                 ) : (
-                    <Button title='Cadastrar' onPress={handleCadastro} />
+                    <Button disabled={isDisabled} title='Cadastrar' onPress={handleCadastro} />
                 )}
             </View>
 
