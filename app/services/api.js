@@ -2,7 +2,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const api = axios.create({
-    baseURL: 'https://backend-todolist-nygg.onrender.com',
+    baseURL: 'https://backend-todolist-iv4o.onrender.com',
     timeout: 20000,
 });
 
