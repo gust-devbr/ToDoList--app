@@ -3,19 +3,15 @@ import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Modal, Style
 import { FontAwesome } from '@expo/vector-icons';
 import api from '../services/api';
 import { useTheme } from '../../context/themeContext';
+import NoteModal from '../components/NoteModal';
 
 export default function Notes() {
     const { theme } = useTheme();
 
     const [notes, setNotes] = useState([]);
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
-
-    const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
-    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-    const [editTitle, setEditTitle] = useState('');
-    const [editContent, setEditContent] = useState('');
-    const [editId, setEditId] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [mode, setMode] = useState("create");
+    const [selectedNote, setSelectedNote] = useState(null);
 
     async function loadNotes() {
         try {
@@ -31,13 +27,23 @@ export default function Notes() {
         loadNotes();
     }, []);
 
-    async function createNote() {
+    async function createNote(title, content) {
         if (!title || !content) return;
+
         await api.post('/notes', { title, content });
-        setTitle('');
-        setContent('');
-        setIsModalCreateOpen(false);
         loadNotes();
+    };
+
+    function openCreateModal() {
+        setMode("create");
+        setSelectedNote(null);
+        setModalVisible(true);
+    };
+
+    function openEditModal(note) {
+        setMode("edit");
+        setSelectedNote(note);
+        setModalVisible(true);
     };
 
     async function deleteNote(id) {
@@ -45,24 +51,17 @@ export default function Notes() {
         loadNotes();
     };
 
-    function openEditModal(note) {
-        setEditId(note.id);
-        setEditTitle(note.title);
-        setEditContent(note.content);
-        setIsModalEditOpen(true);
-    };
+    async function saveEdit(title, content) {
+        if (!title.trim()) return;
 
-    async function saveEdit() {
-        if (!editTitle.trim() || !editContent.trim()) return;
-        await api.put(`/notes/${editId}`, { title: editTitle, content: editContent });
-        setIsModalEditOpen(false);
+        await api.put(`/notes/${selectedNote.id}`, { title, content });
         loadNotes();
     };
 
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
             <Text style={[styles.title, { color: theme.text }]}>Lista de Notas</Text>
-            <Button title='Adicionar Nota' onPress={() => setIsModalCreateOpen(true)} />
+            <Button title='Adicionar Nota' onPress={openCreateModal} />
 
             <FlatList
                 style={{ marginTop: 20 }}
@@ -83,47 +82,20 @@ export default function Notes() {
                 )}
             />
 
-            <Modal visible={isModalCreateOpen} animationType="slide" transparent={true}>
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            placeholder="Digite o título:"
-                            value={title}
-                            onChangeText={setTitle}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder="Digite o conteúdo:"
-                            value={content}
-                            onChangeText={setContent}
-                            style={styles.input}
-                        />
-                        <Button title='Criar' onPress={createNote} />
-                        <Button title='Cancelar' onPress={() => setIsModalCreateOpen(false)} color="red" />
-                    </View>
-                </View>
-            </Modal>
-
-            <Modal visible={isModalEditOpen} animationType="slide" transparent={true}>
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            placeholder='Editar título:'
-                            value={editTitle}
-                            onChangeText={setEditTitle}
-                            style={styles.input}
-                        />
-                        <TextInput
-                            placeholder='Editar conteúdo:'
-                            value={editContent}
-                            onChangeText={setEditContent}
-                            style={styles.input}
-                        />
-                        <Button title='Salvar' onPress={saveEdit} />
-                        <Button title='Cancelar' onPress={() => setIsModalEditOpen(false)} color="red" />
-                    </View>
-                </View>
-            </Modal>
+            <NoteModal
+                isVisible={modalVisible}
+                mode={mode}
+                initialTitle={selectedNote?.title}
+                initialContent={selectedNote?.content}
+                onClose={() => setModalVisible(false)}
+                onSubmit={(title, content) => {
+                    if (mode === "create") {
+                        createNote(title, content);
+                    } else {
+                        saveEdit(title, content);
+                    }
+                }}
+            />
 
             {notes.length > 0 && (
                 <View style={styles.stats}>
@@ -153,25 +125,6 @@ const styles = StyleSheet.create({
     },
     icon: {
         marginHorizontal: 5
-    },
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)'
-    },
-    modalContent: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'white',
-        borderRadius: 10
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 10,
-        padding: 10,
-        borderRadius: 5
     },
     stats: {
         flexDirection: 'row',

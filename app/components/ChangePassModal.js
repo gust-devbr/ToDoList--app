@@ -1,7 +1,7 @@
 import { View, Alert, Modal, TextInput, StyleSheet, Button } from 'react-native';
 import { useState } from 'react';
-import api from '../../services/api';
-import { useAuth } from '../../../context/authContext';
+import api from '../services/api';
+import { useAuth } from '../../context/authContext';
 import { router } from 'expo-router';
 
 export default function ChangePassModal({ visible, onClose }) {

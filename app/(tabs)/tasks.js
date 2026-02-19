@@ -1,20 +1,18 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
 import { Fontisto } from '@expo/vector-icons';
-import api from '../services/api';
 import { useTheme } from '../../context/themeContext';
+import TaskModal from '../components/TaskModal';
+import api from '../services/api';
 
 export default function Tasks() {
     const { theme } = useTheme();
 
     const [tasks, setTasks] = useState([]);
-    const [title, setTitle] = useState('');
-
-    const [isModalCreateOpen, setIsModalCreateOpen] = useState(false);
-    const [isModalEditOpen, setIsModalEditOpen] = useState(false);
-    const [editTitle, setEditTitle] = useState('');
-    const [editId, setEditId] = useState(null);
+    const [modalVisible, setModalVisible] = useState(false);
+    const [mode, setMode] = useState("create");
+    const [selectedTask, setSelectedTask] = useState(null);
 
     async function loadTasks() {
         try {
@@ -24,47 +22,52 @@ export default function Tasks() {
             console.error('Erro ao carregar tarefas', err);
             setTasks([]);
         }
-    }
+    };
 
     useEffect(() => {
         loadTasks();
     }, []);
 
-    async function createTasks() {
+    async function createTask(title) {
         if (!title.trim()) return;
-        await api.post('/tasks', { title });
-        setTitle('');
-        setIsModalCreateOpen(false);
+
+        await api.post("/tasks", { title });
         loadTasks();
-    }
+    };
+
+    function openCreateModal() {
+        setMode("create");
+        setSelectedTask(null);
+        setModalVisible(true);
+    };
+
+    function openEditModal(task) {
+        setMode("edit");
+        setSelectedTask(task);
+        setModalVisible(true);
+    };
 
     async function toggleTasks(id) {
         await api.patch(`/tasks/${id}`);
         loadTasks();
-    }
+    };
 
     async function deleteTasks(id) {
         await api.delete(`/tasks/${id}`);
         loadTasks();
-    }
+    };
 
-    function openEditModal(task) {
-        setEditId(task.id);
-        setEditTitle(task.title);
-        setIsModalEditOpen(true);
-    }
+    async function saveEdit(title) {
+        if (!title.trim()) return;
 
-    async function saveEdit() {
-        if (!editTitle.trim()) return;
-        await api.put(`/tasks/${editId}`, { title: editTitle });
-        setIsModalEditOpen(false);
+        await api.put(`/tasks/${selectedTask.id}`, { title });
         loadTasks();
-    }
+    };
 
-    return (    
+    return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
             <Text style={[styles.title, { color: theme.text }]}>Lista de Tarefas</Text>
-            <Button title="Adicionar Tarefa" onPress={() => setIsModalCreateOpen(true)} />
+            <Button title="Adicionar Tarefa" onPress={openCreateModal} />
 
             <FlatList
                 style={{ marginTop: 20 }}
@@ -79,8 +82,8 @@ export default function Tasks() {
                             <FontAwesome style={styles.actionIcons} name="pencil" size={22} color={theme.primary} />
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => toggleTasks(item.id)}>
-                            {item.completed ? 
-                            <Fontisto style={styles.actionIcons} name="arrow-return-left" size={23} color={"blue"} /> : <FontAwesome style={styles.actionIcons} name="check" size={23} color={'blue'} />}
+                            {item.completed ?
+                                <Fontisto style={styles.actionIcons} name="arrow-return-left" size={23} color={"blue"} /> : <FontAwesome style={styles.actionIcons} name="check" size={23} color={'blue'} />}
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => deleteTasks(item.id)}>
                             <FontAwesome style={styles.actionIcons} name="trash" size={22} color={'red'} />
@@ -89,34 +92,19 @@ export default function Tasks() {
                 )}
             />
 
-            <Modal visible={isModalCreateOpen} animationType="slide" transparent={true}>
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            placeholder="Digite a tarefa"
-                            value={title}
-                            onChangeText={setTitle}
-                            style={styles.input}
-                        />
-                        <Button title="Criar" onPress={createTasks} />
-                        <Button title="Fechar" onPress={() => setIsModalCreateOpen(false)} color="red" />
-                    </View>
-                </View>
-            </Modal>
-
-            <Modal visible={isModalEditOpen} animationType="slide" transparent={true}>
-                <View style={styles.modalBackground}>
-                    <View style={styles.modalContent}>
-                        <TextInput
-                            value={editTitle}
-                            onChangeText={setEditTitle}
-                            style={styles.input}
-                        />
-                        <Button title="Salvar" onPress={saveEdit} />
-                        <Button title="Fechar" onPress={() => setIsModalEditOpen(false)} color="red" />
-                    </View>
-                </View>
-            </Modal>
+            <TaskModal
+                isVisible={modalVisible}
+                mode={mode}
+                initialTitle={selectedTask?.title}
+                onClose={() => setModalVisible(false)}
+                onSubmit={(title) => {
+                    if (mode === "create") {
+                        createTask(title);
+                    } else {
+                        saveEdit(title);
+                    }
+                }}
+            />
 
             {tasks.length > 0 && (
                 <View style={styles.stats}>
@@ -143,33 +131,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         marginBottom: 10
-
     },
     icon: {
         marginHorizontal: 5
-
-    },
-    modalBackground: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'rgba(0,0,0,0.5)'
-
-    },
-    modalContent: {
-        width: '80%',
-        padding: 20,
-        backgroundColor: 'white',
-        borderRadius: 10
-
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#ccc',
-        marginBottom: 10,
-        padding: 10,
-        borderRadius: 5
-
     },
     stats: {
         flexDirection: 'row',
