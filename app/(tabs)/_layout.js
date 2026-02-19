@@ -35,6 +35,16 @@ export default function TabsLayout() {
             />
 
             <Tabs.Screen
+                name="contacts"
+                options={{
+                    title: "Contatos",
+                    tabBarIcon: ({ color, size }) => (
+                        <FontAwesome name="address-book" size={size} color={color} />
+                    )
+                }}
+            />
+
+            <Tabs.Screen
                 name="settings"
                 options={{
                     title: "Configurações",
