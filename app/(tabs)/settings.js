@@ -5,7 +5,7 @@ import { useRouter } from 'expo-router';
 import { useTheme } from '../../context/themeContext';
 import { useAuth } from '../../context/authContext';
 import api from '../services/api';
-import ChangePassModal from '../(auth)/components/ChangePassModal';
+import ChangePassModal from '../components/ChangePassModal';
 
 export default function Settings() {
     const { theme, darkMode, setDarkMode } = useTheme();
