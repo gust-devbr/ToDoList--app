@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, TouchableOpacity, Modal, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import api from '../services/api';
 import { useTheme } from '../../context/themeContext';
 import NoteModal from '../components/NoteModal';
+import ItemList from '../components/ItemList';
 
 export default function Notes() {
     const { theme } = useTheme();
@@ -63,23 +63,10 @@ export default function Notes() {
             <Text style={[styles.title, { color: theme.text }]}>Lista de Notas</Text>
             <Button title='Adicionar Nota' onPress={openCreateModal} />
 
-            <FlatList
-                style={{ marginTop: 20 }}
+            <ItemList 
                 data={notes}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.note}>
-                        <Text style={{ fontSize: 18, flex: 1, color: theme.text }}>
-                            {item.title}   ---   {item.content}
-                        </Text>
-                        <TouchableOpacity onPress={() => openEditModal(item)}>
-                            <FontAwesome style={styles.actionIcons} name="pencil" size={22} color={theme.primary} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deleteNote(item.id)}>
-                            <FontAwesome style={styles.actionIcons} name="trash" size={22} color={'red'} />
-                        </TouchableOpacity>
-                    </View>
-                )}
+                open={openEditModal}
+                deleteItem={deleteNote}
             />
 
             <NoteModal
@@ -118,11 +105,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10
     },
-    note: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10,
-    },
     icon: {
         marginHorizontal: 5
     },
@@ -130,7 +112,4 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    actionIcons: {
-        marginLeft: 10,
-    }
 });

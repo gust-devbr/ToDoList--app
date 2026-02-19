@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import { View, Text, Button, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
+import { View, Text, Button, StyleSheet } from 'react-native';
 import { useTheme } from '../../context/themeContext';
 import TaskModal from '../components/TaskModal';
 import api from '../services/api';
+import ItemList from '../components/ItemList';
 
 export default function Tasks() {
     const { theme } = useTheme();
@@ -69,27 +68,11 @@ export default function Tasks() {
             <Text style={[styles.title, { color: theme.text }]}>Lista de Tarefas</Text>
             <Button title="Adicionar Tarefa" onPress={openCreateModal} />
 
-            <FlatList
-                style={{ marginTop: 20 }}
+            <ItemList 
                 data={tasks}
-                keyExtractor={(item) => item.id.toString()}
-                renderItem={({ item }) => (
-                    <View style={styles.task}>
-                        <Text style={{ textDecorationLine: item.completed ? 'line-through' : 'none', flex: 1, color: theme.text, fontSize: 18 }}>
-                            {item.title}
-                        </Text>
-                        <TouchableOpacity onPress={() => openEditModal(item)}>
-                            <FontAwesome style={styles.actionIcons} name="pencil" size={22} color={theme.primary} />
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => toggleTasks(item.id)}>
-                            {item.completed ?
-                                <Fontisto style={styles.actionIcons} name="arrow-return-left" size={23} color={"blue"} /> : <FontAwesome style={styles.actionIcons} name="check" size={23} color={'blue'} />}
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => deleteTasks(item.id)}>
-                            <FontAwesome style={styles.actionIcons} name="trash" size={22} color={'red'} />
-                        </TouchableOpacity>
-                    </View>
-                )}
+                open={openEditModal}
+                toggle={toggleTasks}
+                deleteItem={deleteTasks}
             />
 
             <TaskModal
@@ -127,11 +110,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 10
     },
-    task: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 10
-    },
     icon: {
         marginHorizontal: 5
     },
@@ -139,7 +117,4 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between'
     },
-    actionIcons: {
-        marginLeft: 10,
-    }
 });
